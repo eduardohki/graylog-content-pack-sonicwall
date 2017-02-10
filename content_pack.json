@@ -1,0 +1,393 @@
+{
+    "name": "Dell SonicWall",
+    "description": "# SonicWall Content Pack for Graylog\nTested with Graylog 2.1\n\nThis content pack provides extractors for SonicWall Firewalls and a few example dashboards:\n* VPN Connections (24h)\n* More coming soon (*help is welcome!*)\n\n## Includes\n* Input SonicWall (Raw/Plaintext UDP)\n* Extractors (Garbage Cleanup and KVP, dst_ip, dst_port, dst_if, dst_hostname, src_ip, src_port, src_if, src_hostname, proto_type, proto_service, timestamp)\n* Dashboards\n\n  ### Tip\n  The Dashboards use the \"gl2_source_input\" field in queries. Be sure to verify if it matches your SonicWall Input ID\n\n## Requirements\n* Dell SonicWall Firewall configured to send SYSLOG to 12202/UDP, no custom settings\n\n## SonicWall Reference Guide\n* Dell SonicWall Log Reference PDF: http://software.sonicwall.com/Manual/232-003262-00_RevA_SonicOS_6.2.5_LogEvents_ReferenceGuide.pdf\n",
+    "category": "Firewall, VPN, SonicWall, SonicOS",
+    "inputs": [{
+        "title": "SonicWall",
+        "configuration": {
+            "override_source": null,
+            "recv_buffer_size": 26214400,
+            "bind_address": "0.0.0.0",
+            "port": 12202
+        },
+        "static_fields": {},
+        "type": "org.graylog2.inputs.raw.udp.RawUDPInput",
+        "global": true,
+        "extractors": [{
+            "title": "Garbage Cleanup and KVP",
+            "type": "REGEX_REPLACE",
+            "cursor_strategy": "COPY",
+            "target_field": "message",
+            "source_field": "message",
+            "configuration": {
+                "regex": "^<\\d+\\>(.*)",
+                "replacement": "$1",
+                "replace_all": true
+            },
+            "converters": [{
+                "type": "TOKENIZER",
+                "configuration": {}
+            }, {
+                "type": "NUMERIC",
+                "configuration": {}
+            }, {
+                "type": "DATE",
+                "configuration": {
+                    "date_format": "yyyy-MM-dd HH:mm:ss z"
+                }
+            }],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "dst_ip",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "dst_ip",
+            "source_field": "dst",
+            "configuration": {
+                "index": 1,
+                "split_by": ":"
+            },
+            "converters": [],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "dst_port",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "dst_port",
+            "source_field": "dst",
+            "configuration": {
+                "index": 2,
+                "split_by": ":"
+            },
+            "converters": [{
+                "type": "NUMERIC",
+                "configuration": {}
+            }],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "dst_if",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "dst_if",
+            "source_field": "dst",
+            "configuration": {
+                "index": 3,
+                "split_by": ":"
+            },
+            "converters": [],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "src_ip",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "src_ip",
+            "source_field": "src",
+            "configuration": {
+                "index": 1,
+                "split_by": ":"
+            },
+            "converters": [],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "src_port",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "src_port",
+            "source_field": "src",
+            "configuration": {
+                "index": 2,
+                "split_by": ":"
+            },
+            "converters": [{
+                "type": "NUMERIC",
+                "configuration": {}
+            }],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "src_if",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "src_if",
+            "source_field": "src",
+            "configuration": {
+                "index": 3,
+                "split_by": ":"
+            },
+            "converters": [],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "proto_type",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "proto_type",
+            "source_field": "proto",
+            "configuration": {
+                "index": 1,
+                "split_by": "/"
+            },
+            "converters": [{
+                "type": "LOWERCASE",
+                "configuration": {}
+            }],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "proto_service",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "proto_service",
+            "source_field": "proto",
+            "configuration": {
+                "index": 2,
+                "split_by": "/"
+            },
+            "converters": [{
+                "type": "LOWERCASE",
+                "configuration": {}
+            }],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "timestamp",
+            "type": "REGEX",
+            "cursor_strategy": "COPY",
+            "target_field": "timestamp",
+            "source_field": "time",
+            "configuration": {
+                "regex_value": "(\\d\\d\\d\\d-\\d\\d-\\d\\d\\s\\d\\d:\\d\\d:\\d\\d)"
+            },
+            "converters": [{
+                "type": "DATE",
+                "configuration": {
+                    "date_format": "yyyy-MM-dd HH:mm:ss",
+                    "time_zone": "Etc/UTC"
+                }
+            }],
+            "condition_type": "NONE",
+            "condition_value": "",
+            "order": 0
+        }, {
+            "title": "src_hostname",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "src_hostname",
+            "source_field": "src",
+            "configuration": {
+                "index": 4,
+                "split_by": ":"
+            },
+            "converters": [],
+            "condition_type": "REGEX",
+            "condition_value": "(.*:.*:.*:.*)",
+            "order": 0
+        }, {
+            "title": "dst_hostname",
+            "type": "SPLIT_AND_INDEX",
+            "cursor_strategy": "COPY",
+            "target_field": "dst_hostname",
+            "source_field": "dst",
+            "configuration": {
+                "index": 4,
+                "split_by": ":"
+            },
+            "converters": [],
+            "condition_type": "REGEX",
+            "condition_value": "(.*:.*:.*:.*)",
+            "order": 0
+        }]
+    }],
+    "streams": [],
+    "outputs": [],
+    "dashboards": [{
+        "title": "SonicWall - VPN Audit (24h)",
+        "description": "VPN Connections from last 24 hours",
+        "dashboard_widgets": [{
+            "description": "Failed VPN Connections",
+            "type": "SEARCH_RESULT_CHART",
+            "cache_time": 10,
+            "configuration": {
+                "interval": "hour",
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Failed with VPN client,  Authentication failure\" OR m:140)"
+            },
+            "col": 1,
+            "row": 4,
+            "height": 1,
+            "width": 2
+        }, {
+            "description": "Established VPN Connections",
+            "type": "SEARCH_RESULT_CHART",
+            "cache_time": 10,
+            "configuration": {
+                "interval": "hour",
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Succeeded with VPN client\" OR m:139)"
+            },
+            "col": 1,
+            "row": 1,
+            "height": 1,
+            "width": 2
+        }, {
+            "description": "Failed VPN Connections",
+            "type": "SEARCH_RESULT_COUNT",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "lower_is_better": true,
+                "trend": true,
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Failed with VPN client,  Authentication failure\" OR m:140)"
+            },
+            "col": 3,
+            "row": 4,
+            "height": 1,
+            "width": 1
+        }, {
+            "description": "Established VPN Connections",
+            "type": "SEARCH_RESULT_COUNT",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "lower_is_better": false,
+                "trend": true,
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Succeeded with VPN client\" OR m:139)"
+            },
+            "col": 3,
+            "row": 1,
+            "height": 1,
+            "width": 1
+        }, {
+            "description": "Users who successfully connected",
+            "type": "QUICKVALUES",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "field": "usr",
+                "show_pie_chart": false,
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Succeeded with VPN client\" OR m:139)",
+                "show_data_table": true
+            },
+            "col": 3,
+            "row": 2,
+            "height": 2,
+            "width": 1
+        }, {
+            "description": "Users who failed to connect",
+            "type": "QUICKVALUES",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "field": "usr",
+                "show_pie_chart": false,
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Failed with VPN client, Authentication failure\" OR m:140)",
+                "show_data_table": true
+            },
+            "col": 3,
+            "row": 5,
+            "height": 2,
+            "width": 1
+        }, {
+            "description": "Failed Connection Sources",
+            "type": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "field": "src_ip_geolocation",
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Failed with VPN client, Authentication failure\" OR m:140)"
+            },
+            "col": 1,
+            "row": 5,
+            "height": 2,
+            "width": 2
+        }, {
+            "description": "Established Connection Sources",
+            "type": "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "field": "src_ip_geolocation",
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Succeeded with VPN client\" OR m:139)"
+            },
+            "col": 1,
+            "row": 2,
+            "height": 2,
+            "width": 2
+        }, {
+            "description": "Established Connection IPs",
+            "type": "QUICKVALUES",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "field": "src_ip",
+                "show_pie_chart": true,
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Succeeded with VPN client\" OR m:139)",
+                "show_data_table": true
+            },
+            "col": 4,
+            "row": 1,
+            "height": 3,
+            "width": 1
+        }, {
+            "description": "Failed Connection IPs",
+            "type": "QUICKVALUES",
+            "cache_time": 10,
+            "configuration": {
+                "timerange": {
+                    "type": "relative",
+                    "range": 86400
+                },
+                "field": "src_ip",
+                "show_pie_chart": true,
+                "query": "gl2_source_input:\"589b68dd125a995ccad62ab7\" AND (msg:\"XAUTH Failed with VPN client, Authentication failure\" OR m:140)",
+                "show_data_table": true
+            },
+            "col": 4,
+            "row": 4,
+            "height": 3,
+            "width": 1
+        }]
+    }],
+    "grok_patterns": []
+}
