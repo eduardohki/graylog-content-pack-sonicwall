@@ -1,0 +1,523 @@
+{  
+   "name":"SonicWall Security",
+   "description":"SonicWall Security Content Pack",
+   "category":"Firewalls",
+   "inputs":[  
+
+   ],
+   "streams":[  
+
+   ],
+   "outputs":[  
+
+   ],
+   "dashboards":[  
+      {  
+         "title":"SonicWall Security Audit (24h)",
+         "description":"IPS/IDS Dashboard",
+         "dashboard_widgets":[  
+            {  
+               "description":"Blocked Services",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"proto_service",
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Initiator from country blocked\" OR m:1198)",
+                  "show_data_table":true,
+                  "interval":"hour",
+                  "show_pie_chart":true
+               },
+               "col":4,
+               "row":1,
+               "height":3,
+               "width":1
+            },
+            {  
+               "description":"Blocked Connection Count",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "interval":"hour",
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Initiator from country blocked\" OR m:1198)"
+               },
+               "col":3,
+               "row":1,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Probable Port Scan",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"keyword",
+                     "keyword":"Last Day"
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Probable port scan detected\" OR m:83)"
+               },
+               "col":1,
+               "row":4,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Possible Port Scan",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"keyword",
+                     "keyword":"Last Day"
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Possible port scan detected\" OR m:82)"
+               },
+               "col":3,
+               "row":4,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Possible Port Scan Source IP",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"keyword",
+                     "keyword":"Last Day"
+                  },
+                  "field":"src_ip",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Possible port scan detected\" OR m:82)",
+                  "show_data_table":true
+               },
+               "col":3,
+               "row":5,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Possible Port Scan Hostname",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"keyword",
+                     "keyword":"Last Day"
+                  },
+                  "field":"src_hostname",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Possible port scan detected\" OR m:82)",
+                  "show_data_table":true
+               },
+               "col":4,
+               "row":4,
+               "height":2,
+               "width":1
+            },
+            {  
+               "description":"Probable Port Scan Hostname",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"keyword",
+                     "keyword":"Last Day"
+                  },
+                  "field":"src_hostname",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Probable port scan detected\" OR m:83)",
+                  "show_data_table":true
+               },
+               "col":2,
+               "row":4,
+               "height":2,
+               "width":1
+            },
+            {  
+               "description":"Probable Port Scan Source IP",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"keyword",
+                     "keyword":"Last Day"
+                  },
+                  "field":"src_ip",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Probable port scan detected\" OR m:83)",
+                  "show_data_table":true
+               },
+               "col":1,
+               "row":5,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Geo-IP Blocked Connections",
+               "type":"SEARCH_RESULT_CHART",
+               "cache_time":10,
+               "configuration":{  
+                  "interval":"hour",
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Initiator from country blocked\" OR m:1198)"
+               },
+               "col":1,
+               "row":1,
+               "height":1,
+               "width":2
+            },
+            {  
+               "description":"RBL Blacklist Map",
+               "type":"org.graylog.plugins.map.widget.strategy.MapWidgetStrategy",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"src_geolocation",
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"SMTP Server on RBL Blacklist\" OR m:799)"
+               },
+               "col":1,
+               "row":6,
+               "height":2,
+               "width":2
+            },
+            {  
+               "description":"RBL Blacklist IP",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"src_ip",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"SMTP Server on RBL Blacklist\" OR m:799)",
+                  "show_data_table":true
+               },
+               "col":3,
+               "row":6,
+               "height":2,
+               "width":1
+            },
+            {  
+               "description":"RBL Blacklist Provider",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"note",
+                  "show_pie_chart":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"SMTP Server on RBL Blacklist\" OR m:799)",
+                  "show_data_table":true
+               },
+               "col":4,
+               "row":6,
+               "height":2,
+               "width":1
+            },
+            {  
+               "description":"AV Gateway Alerts",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"AV Gateway Alert\" OR m:809)"
+               },
+               "col":1,
+               "row":8,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"AV Gateway Alert Destination IP",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"dst_hostname",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"AV Gateway Alert\" OR m:809)",
+                  "show_data_table":true
+               },
+               "col":2,
+               "row":8,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"AV Gateway Alert Type",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"msg",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"AV Gateway Alert\" OR m:809)",
+                  "show_data_table":true
+               },
+               "col":1,
+               "row":9,
+               "height":1,
+               "width":2
+            },
+            {  
+               "description":"Botnet Activity Blocked",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Botnet\" OR m:1201 OR m:1200)"
+               },
+               "col":3,
+               "row":8,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Botnet Source Activity",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"src_hostname",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Botnet\" OR m:1201 OR m:1200)",
+                  "show_data_table":true
+               },
+               "col":4,
+               "row":8,
+               "height":2,
+               "width":1
+            },
+            {  
+               "description":"Botnet Activity Destination",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"dst_hostname",
+                  "show_pie_chart":false,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Botnet\" OR m:1201 OR m:1200)",
+                  "show_data_table":true
+               },
+               "col":3,
+               "row":9,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Anti-Spyware Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Anti-Spyware\" OR m:794 OR m:795)"
+               },
+               "col":4,
+               "row":10,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"IDP Prevention Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"IDP Prevention Alert\" OR m:790)"
+               },
+               "col":1,
+               "row":10,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"IDP Detection Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"IDP Detection Alert\" OR m:789)"
+               },
+               "col":1,
+               "row":11,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"IPS Prevention Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"IPS Prevention Alert\" OR m:609)"
+               },
+               "col":2,
+               "row":10,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"IPS Detection Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"IPS Detection Alert\" OR m:608)"
+               },
+               "col":2,
+               "row":11,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"App Control Prevention Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Application Control Prevention Alert\" OR m:1155)"
+               },
+               "col":3,
+               "row":10,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"App Control Detection Alert",
+               "type":"SEARCH_RESULT_COUNT",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "lower_is_better":true,
+                  "trend":true,
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Application Control Detection Alert\" OR m:1154)"
+               },
+               "col":3,
+               "row":11,
+               "height":1,
+               "width":1
+            },
+            {  
+               "description":"Geo-IP Blocked Connection Map",
+               "type":"org.graylog.plugins.map.widget.strategy.MapWidgetStrategy",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"src_ip_geolocation",
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Initiator from country blocked\" OR m:1198)"
+               },
+               "col":1,
+               "row":2,
+               "height":2,
+               "width":2
+            },
+            {  
+               "description":"Blocked Internal Host",
+               "type":"QUICKVALUES",
+               "cache_time":10,
+               "configuration":{  
+                  "timerange":{  
+                     "type":"relative",
+                     "range":86400
+                  },
+                  "field":"dst_hostname",
+                  "query":"gl2_source_input:\"59442665a0532d0fdaea9e0d\" AND (msg:\"Initiator from country blocked\" OR m:1198)",
+                  "show_data_table":true,
+                  "interval":"hour",
+                  "show_pie_chart":false
+               },
+               "col":3,
+               "row":2,
+               "height":2,
+               "width":1
+            }
+         ]
+      }
+   ],
+   "grok_patterns":[  
+
+   ]
+}
